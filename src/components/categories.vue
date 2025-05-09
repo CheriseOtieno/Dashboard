@@ -91,35 +91,18 @@
       </div>
     </div>
 
-    <div class="activity-table">
-      <table>
-        <thead>
-          <tr>
-            <th>#SERVICE</th>
-            <th>CATEGORY</th>
-            <th>DATE</th>
-            <th>TASK COMPLETION</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(entry, index) in activityLog" :key="index">
-            <td>{{ index + 1 }}</td>
-            <td>{{ entry.category }}</td>
-            <td>{{ entry.date }}</td>
-            <td>
-              <span v-if="entry.success" style="color: green">✔️</span>
-              <span v-else style="color: red">❌</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <activitytable :activityData="activityLog" />
   </main>
 </template>
 
 <script>
+import activitytable from './activitytable.vue';
+
 export default {
   name: 'categories',
+  components: {
+    activitytable
+  },
   data() {
     return {
       showForm: false,
@@ -171,136 +154,107 @@ export default {
 </script>
 
 <style scoped>
-  .categoriespage {
-    background: linear-gradient(45deg, #f8c9d4, #ffd6e3);
-    padding: 2rem;
-    font-family: 'Roboto', sans-serif;
-  }
+.categoriespage {
+  background: linear-gradient(45deg, #f8c9d4, #ffd6e3);
+  padding: 2rem;
+  font-family: 'Roboto', sans-serif;
+}
 
-  .card {
-    background-color: black;
-    padding: 1rem;
-    margin-bottom: 2rem;
-    border-radius: 6px;
-  }
+.card {
+  background-color: black;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  border-radius: 6px;
+}
 
-  .card h3 {
-    color: pink;
-    margin: 0;
-    text-align: center;
-  }
+.card h3 {
+  color: pink;
+  margin: 0;
+  text-align: center;
+}
 
+.category-holder {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  justify-content: center;
+}
+
+.category-holder > div {
+  background-color: lightblue;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.category-holder > div:hover {
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
   .category-holder {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: 1fr 1fr;
     gap: 1rem;
-    justify-content: center;
   }
 
   .category-holder > div {
-    background-color: lightblue;
-    border: 1px solid #ccc;
-    border-radius: 12px;
-    padding: 1rem;
-    text-align: center;
-    cursor: pointer; 
-    transition: transform 0.2s;
+    margin-bottom: 1rem;
   }
+}
 
-  .category-holder > div:hover {
-    transform: scale(1.05);
-  }
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
 
-  @media (max-width: 768px) {
-    .category-holder {
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem; 
-    }
+.modal-content {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+}
 
-    .category-holder > div {
-      margin-bottom: 1rem;
-    }
+.modal-content label {
+  display: block;
+  margin-bottom: 0.75rem;
+}
 
-    .activity-table {
-      overflow-x: auto;
-    }
+.modal-content input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
 
-    .activity-table table {
-      width: 100%;
-      min-width: 600px;
-    }
-  }
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
 
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.4);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
+.form-buttons button {
+  padding: 0.5rem 1rem;
+  background-color: #f8c9d4;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
 
-  .modal-content {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 400px;
-  }
-
-  .modal-content label {
-    display: block;
-    margin-bottom: 0.75rem;
-  }
-
-  .modal-content input {
-    width: 100%;
-    padding: 0.5rem;
-    margin-top: 0.3rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-
-  .form-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 1rem;
-  }
-
-  .form-buttons button {
-    padding: 0.5rem 1rem;
-    background-color: #f8c9d4;
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-
-  .form-buttons button:hover {
-    background-color: #ffb6c1;
-  }
-
-  .activity-table {
-    margin-top: 2rem;
-    overflow-x: auto; 
-  }
-
-  .activity-table table {
-    width: 100%;
-    border-collapse: collapse;
-    background: black;
-    border: 1px solid #ccc;
-    color: pink;
-  }
-
-  .activity-table th,
-  .activity-table td {
-    padding: 0.75rem;
-    border: 1px solid #ccc;
-    text-align: center;
-  }
+.form-buttons button:hover {
+  background-color: #ffb6c1;
+}
 </style>
